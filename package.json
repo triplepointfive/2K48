@@ -1,0 +1,43 @@
+{
+  "name": "2K48",
+  "main": "index.js",
+  "description": "A Game",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/triplepointfive/2K48.git"
+  },
+  "author": "Ilya Smelkov",
+  "config": {
+    "port": "8001"
+  },
+  "files": [
+    "index.js",
+    "Gulpfile.js",
+    "index.html"
+  ],
+  "scripts": {
+    "start": "gulp",
+    "pub": "npm version patch && npm publish && git push",
+    "sync": "git ac && git pull --rebase && git push",
+    "postinstall": "node index.js",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "keywords": [
+    "game"
+  ],
+  "bugs": {
+    "url": "https://github.com/triplepointfive/2K48/issues"
+  },
+  "homepage": "https://github.com/triplepointfive/2K48#readme",
+  "dependencies": {
+    "gently-copy": "^1.0.0",
+    "gulp": "^3.9.0",
+    "gulp-connect": "^2.3.1",
+    "gulp-livereload": "^3.8.1",
+    "opn": "^4.0.0"
+  },
+  "devDependencies": {
+    "semantic-release": "^4.3.5"
+  }
+}
