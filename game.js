@@ -169,6 +169,12 @@ $(function() {
     },
     mounted: function() {
       $(document).on('keydown', this.keydown);
+
+      let hammertime = new window.Hammer(document, {});
+      hammertime.on('swipeleft', () => this.move('left'));
+      hammertime.on('swipeup', () => this.move('up'));
+      hammertime.on('swipedown', () => this.move('down'));
+      hammertime.on('swiperight', () => this.move('right'));
     },
     beforeDestroy: function() {
       $(document).off('keydown', this.keydown);
