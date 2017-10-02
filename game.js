@@ -6,7 +6,7 @@ $(function() {
 
       this.raw = Array(height);
       for (let i = 0; i < height; i++) {
-        this.raw[i] = Array.apply(null, Array(width));
+        this.raw[i] = new Array(width).fill(null);
       }
       this.addRandomValue();
       this.addRandomValue();
@@ -20,6 +20,62 @@ $(function() {
       const cellPos = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
       this.raw[cellPos[0]][cellPos[1]] = this._newValue();
+    }
+
+    move(direction) {
+      this.anyMoved = false;
+      this.processed = [];
+
+      switch(direction) {
+      case 'right':
+        break;
+      case 'up':
+        for (let i = 0; i < this.height; i++) {
+          for (let j = 0; j < this.width; j++) {
+            this._processCell(i, j, -1, 0);
+          }
+        }
+        break;
+      case 'down':
+        for (let i = this.height - 1; i >= 0; i--) {
+          for (let j = this.width - 1; j >= 0; j--) {
+            this._processCell(i, j, 1, 0);
+          }
+        }
+        break;
+      case 'left':
+        break;
+      }
+
+      if (this.anyMoved) {
+        this.addRandomValue();
+      }
+    }
+
+    _processCell(i, j, di, dj) {
+      if (!this.raw[i][j]) { return; }
+
+      const ti = i + di, tj = j + dj;
+      if (!this._inGrid(ti, tj)) { return; }
+
+      switch (this.raw[ti][tj]) {
+      case null:
+        this.raw[ti][tj] = this.raw[i][j];
+        this._processCell(ti, tj, di, dj);
+        break;
+      case this.raw[i][j]:
+        this.raw[ti][tj] *= 2;
+        break;
+      default:
+        return;
+      }
+
+      this.raw[i][j] = null;
+      this.anyMoved = true;
+    }
+
+    _inGrid(i, j) {
+      return i >= 0 && j >= 0 && i < this.height && j < this.width;
     }
 
     _newValue() {
@@ -41,32 +97,87 @@ $(function() {
 
   const GameGridComponent = {
     template: `
-      <div class="game-grid">
-        <div class="row" v-for="row in grid">
-          <div class="col grid-cell" v-for="cell in row">
-            <div class="value">
-              {{ cell }}
-            </div>
-          </div>
+      <div class="card-body">
+        <div class="grid-row row" v-for="(row, i) in grid">
+          <div is="game-grid-cell" v-for="(cell, j) in row" :value="cell" :key="i * 4 + j"></div>
         </div>
       </div>
     `,
-    props: ['grid']
+    props: ['grid'],
+    components: {
+      'game-grid-cell': {
+        template: `
+          <div class="border border-secondary rounded cell text-center col-3">
+            <div class="h5 cell-content">
+              {{ value }}
+            </div>
+          </div>
+        `,
+        props: ['value']
+      }
+    }
   };
 
-  const GameFieldComponent = {
+  const GameControlsComponent = {
     template: `
-      <div class="game-field">
-        <game-grid :grid="rawGrid"></game-grid>
-        <div class="game-controls">
-          <a href="#" class="btn btn-secondary" @click="add">
-            Add
+      <div class="card-footer game-controls text-center">
+        <div class="btn-group">
+          <a href="#" class="btn btn-secondary" v-for="direction in directions" @click="move(direction)">
+            {{ direction }}
           </a>
         </div>
       </div>
     `,
+    data: function() {
+      return {
+        directions: ['left', 'up', 'down', 'right']
+      };
+    },
+    methods: {
+      add: function() {
+        this.$emit('add');
+      },
+      move: function(direction) {
+        this.$emit('move', direction);
+      },
+      keydown: function(e) {
+        switch (e.which) {
+        case 37:
+          this.move('left');
+          break;
+        case 38:
+          this.move('up');
+          break;
+        case 40:
+          this.move('down');
+          break;
+        case 39:
+          this.move('right');
+          break;
+        }
+      }
+    },
+    mounted: function() {
+      $(document).on('keydown', this.keydown);
+    },
+    beforeDestroy: function() {
+      $(document).off('keydown', this.keydown);
+    }
+  };
+
+  const GameFieldComponent = {
+    template: `
+      <div class="card game-field">
+        <div class="card-header">
+          Score: 2048
+        </div>
+        <game-grid :grid="rawGrid"></game-grid>
+        <game-controls @add="add" @move="move"></game-controls>
+      </div>
+    `,
     components: {
-      'game-grid': GameGridComponent
+      'game-grid': GameGridComponent,
+      'game-controls': GameControlsComponent
     },
     data: function() {
       const grid = new Grid(4, 4);
@@ -77,11 +188,13 @@ $(function() {
     },
     methods: {
       add: function() {
-        this.grid.addRandomValue();
-        this.$set(this.rawGrid, this.grid.raw);
+        this.withGrid((grid) => grid.addRandomValue());
       },
       move: function(direction) {
-        this.grid.addRandomValue();
+        this.withGrid((grid) => grid.move(direction));
+      },
+      withGrid: function(callback) {
+        callback(this.grid);
         this.$set(this.rawGrid, this.grid.raw);
       }
     }

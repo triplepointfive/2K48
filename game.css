@@ -1,30 +1,22 @@
-.game-field {
-  width: 300px;
-  height: 500px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
+.container-fluid {
+  padding-top: 15px;
 }
 
-.grid-cell {
-  border: 3px solid grey;
+.grid-row > .cell {
   position: relative;
+  width: 25%;
+  padding: 0;
 }
 
-.grid-cell::before {
+.grid-row > .cell::after {
   content: "";
   display: block;
   padding-top: 100%;
 }
 
-.grid-cell > .value {
+.cell-content {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  line-height: 3;
 }
