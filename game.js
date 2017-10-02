@@ -171,6 +171,7 @@ $(function() {
       $(document).on('keydown', this.keydown);
 
       let hammertime = new window.Hammer(document, {});
+      hammertime.get('swipe').set({ direction: window.Hammer.DIRECTION_ALL });
       hammertime.on('swipeleft', () => this.move('left'));
       hammertime.on('swipeup', () => this.move('up'));
       hammertime.on('swipedown', () => this.move('down'));
