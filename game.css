@@ -1,3 +1,7 @@
+body {
+  background-color: #fff3f7;
+}
+
 .container-fluid {
   padding-top: 15px;
 }
@@ -20,3 +24,19 @@
   height: 100%;
   line-height: 3;
 }
+
+.cell-content.-cell-2 { background-color: #ffe400; }
+.cell-content.-cell-4 { background-color: #ffcc40; }
+.cell-content.-cell-8 { background-color: #fb0; }
+.cell-content.-cell-16 { background-color: #ffb100; }
+.cell-content.-cell-32 { background-color: #ff9b40; }
+.cell-content.-cell-64 { background-color: #ff7f00; }
+.cell-content.-cell-128 { background-color: #ff5640; }
+.cell-content.-cell-256 { background-color: #ff1300; }
+.cell-content.-cell-512 { background-color: #d2006b; }
+.cell-content.-cell-1024 { background-color: #bf9430; }
+.cell-content.-cell-2048 { background-color: #bf7530; }
+.cell-content.-cell-4096 { background-color: #a69400; }
+.cell-content.-cell-8192 { background-color: #a65b00; }
+.cell-content.-cell-16384 { background-color: #a61300; }
+.cell-content.-cell-32768 { background-color: #880045; }

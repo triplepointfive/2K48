@@ -28,6 +28,11 @@ $(function() {
 
       switch(direction) {
       case 'right':
+        for (let j = this.width - 1; j >= 0; j--) {
+          for (let i = this.height - 1; i >= 0; i--) {
+            this._processCell(i, j, 0, 1);
+          }
+        }
         break;
       case 'up':
         for (let i = 0; i < this.height; i++) {
@@ -44,6 +49,11 @@ $(function() {
         }
         break;
       case 'left':
+        for (let j = 0; j < this.width; j++) {
+          for (let i = 0; i < this.height; i++) {
+            this._processCell(i, j, 0, -1);
+          }
+        }
         break;
       }
 
@@ -108,7 +118,7 @@ $(function() {
       'game-grid-cell': {
         template: `
           <div class="border border-secondary rounded cell text-center col-3">
-            <div class="h5 cell-content">
+            <div class="h5 cell-content" :class="value ? ('-cell-' + value) : ''">
               {{ value }}
             </div>
           </div>
