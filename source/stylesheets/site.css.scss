@@ -6,16 +6,18 @@ body {
   padding-top: 15px;
 }
 
-.grid-row > .cell {
-  position: relative;
-  width: 25%;
-  padding: 0;
-}
+.grid-row {
+  > .cell {
+    position: relative;
+    width: 25%;
+    padding: 0;
+  }
 
-.grid-row > .cell::after {
-  content: "";
-  display: block;
-  padding-top: 100%;
+  > .cell::after {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
 }
 
 .cell-content {
