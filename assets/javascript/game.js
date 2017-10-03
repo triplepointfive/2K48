@@ -1,3 +1,8 @@
+import Vue from 'vue/dist/vue.esm';
+import $ from 'jquery';
+import Hammer from 'hammerjs';
+import 'hammer-time';
+
 $(function() {
   class Grid {
     constructor(width, height) {
@@ -181,8 +186,8 @@ $(function() {
     mounted: function() {
       $(document).on('keydown', this.keydown);
 
-      let hammertime = new window.Hammer(document, {});
-      hammertime.get('swipe').set({ direction: window.Hammer.DIRECTION_ALL });
+      let hammertime = new Hammer(document, {});
+      hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
       hammertime.on('swipeleft', () => this.move('left'));
       hammertime.on('swipeup', () => this.move('up'));
       hammertime.on('swipedown', () => this.move('down'));
@@ -228,7 +233,7 @@ $(function() {
     }
   };
 
-  new window.Vue({
+  new Vue({
     el: '#app',
     components: {
       'game-field': GameFieldComponent

@@ -7,4 +7,3 @@ gem 'middleman-gh-pages'
 gem 'rake'
 
 gem 'slim'
-gem 'sass'
