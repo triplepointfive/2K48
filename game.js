@@ -3,6 +3,7 @@ $(function() {
     constructor(width, height) {
       this.width = width;
       this.height = height;
+      this.score = 0;
 
       this.raw = Array(height);
       for (let i = 0; i < height; i++) {
@@ -75,6 +76,7 @@ $(function() {
         break;
       case this.raw[i][j]:
         this.raw[ti][tj] *= 2;
+        this.score += this.raw[ti][tj];
         break;
       default:
         return;
@@ -133,7 +135,8 @@ $(function() {
       <div class="card-footer game-controls text-center">
         <div class="btn-group">
           <a href="#" class="btn btn-secondary" v-for="direction in directions" @click="move(direction)">
-            {{ direction }}
+            <span class="oi" :class="chevronClass(direction)"></span>
+            </span>
           </a>
         </div>
       </div>
@@ -144,6 +147,14 @@ $(function() {
       };
     },
     methods: {
+      chevronClass: function(direction) {
+        return {
+          'up': 'oi-chevron-top',
+          'down': 'oi-chevron-bottom',
+          'left': 'oi-chevron-left',
+          'right': 'oi-chevron-right'
+        }[direction];
+      },
       add: function() {
         this.$emit('add');
       },
@@ -186,7 +197,7 @@ $(function() {
     template: `
       <div class="card game-field">
         <div class="card-header">
-          Score: 2048
+          Score: {{ grid.score }}
         </div>
         <game-grid :grid="rawGrid"></game-grid>
         <game-controls @add="add" @move="move"></game-controls>
