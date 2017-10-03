@@ -14,7 +14,7 @@
     "babel-preset-env": "^1.1.8",
     "clean-webpack-plugin": "^0.1.15",
     "css-loader": "^0.26.1",
-    "extract-text-webpack-plugin": "^2.0.0-beta",
+    "extract-text-webpack-plugin": "^2.1.2",
     "jquery": "^3.2.1",
     "node-sass": "^4.5.0",
     "postcss": "^5.2.12",

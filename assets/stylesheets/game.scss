@@ -1,4 +1,4 @@
-@import "~sanitize.css/sanitize.css";
+@import "~bootstrap/scss/bootstrap";
 
 body {
   background-color: #fff3f7;
@@ -13,6 +13,7 @@ body {
     position: relative;
     width: 25%;
     padding: 0;
+    min-width: 50px;
   }
 
   > .cell::after {
@@ -26,7 +27,7 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  line-height: 3;
+  line-height: 2.5;
 }
 
 .cell-content.-cell-2 { background-color: #ffe400; }

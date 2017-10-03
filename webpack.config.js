@@ -4,7 +4,7 @@ var Clean = require('clean-webpack-plugin');
 
 module.exports = {
   entry: {
-    game: './assets/javascript/game.js'
+    game: ['./assets/javascript/game.js', './assets/stylesheets/game.scss']
   },
 
   resolve: {
@@ -47,7 +47,7 @@ module.exports = {
           ]})
       },
       {
-        test: /\.scss$|.sass$/,
+        test: /\.(scss|sass)$/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
@@ -79,6 +79,6 @@ module.exports = {
       }
     }),
     new Clean(['.tmp']),
-    new ExtractTextPlugin("assets/stylesheets/[name].bundle.css")
+    new ExtractTextPlugin('assets/stylesheets/[name].bundle.css')
   ]
 };
