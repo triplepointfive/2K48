@@ -14,15 +14,14 @@ script#game-grid type="text/template"
       .grid-cell.-empty v-for="j in 4" :data-row="i-1" :data-column="j-1"
     div[
       is="game-grid-cell"
-      v-for="i in 16"
-      :value="grid[i-1]"
-      :i="~~((i-1) / 4)"
-      :j="(i-1) % 4"
+      v-for="cell in grid"
+      :cell="cell"
+      :key="cell.id"
     ]
 
 script#game-grid-cell type="text/template"
-  .grid-cell.-tile @click="blink" :class="cellClasses" :data-row="i-1" :data-column="j-1"
+  .grid-cell.-tile @click="blink" :class="cellClasses"
     .value
-      | {{ value }}
+      | {{ cell.value }}
 
 <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
