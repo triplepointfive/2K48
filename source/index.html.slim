@@ -1,4 +1,23 @@
-#app.container-fluid
-  .row.justify-content-md-center
-    .col-sm-auto
-      div is="game-field"
+#app.container
+  div is="game-field"
+
+script#game-field type="text/template"
+  .game-field
+    .game-header
+      | Score: {{ grid.score }}
+    div is="game-grid" :grid="rawGrid"
+    div is="game-controls" @add="add" @move="move"
+
+script#game-grid type="text/template"
+  .game-grid
+    .grid-row v-for="i in 4"
+      div[
+        is="game-grid-cell"
+        v-for="j in 4"
+        :value="grid[4 * (i - 1) + (j - 1)]"
+      ]
+
+script#game-grid-cell type="text/template"
+  .cell @click="blink" :class="cellClasses"
+    .value
+      | {{ value }}

@@ -1,5 +1,6 @@
 import Vue from 'vue/dist/vue.esm';
 import $ from 'jquery';
+import 'jquery-ui-dist/jquery-ui';
 import Hammer from 'hammerjs';
 import 'hammer-time';
 
@@ -26,6 +27,10 @@ $(function() {
       const cellPos = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
       this.raw[cellPos[0]][cellPos[1]] = this._newValue();
+    }
+
+    linear() {
+      return [].concat.apply([], this.raw);
     }
 
     move(direction) {
@@ -113,53 +118,31 @@ $(function() {
   }
 
   const GameGridComponent = {
-    template: `
-      <div class="card-body">
-        <div class="grid-row row" v-for="(row, i) in grid">
-          <div is="game-grid-cell" v-for="(cell, j) in row" :value="cell" :key="i * 4 + j"></div>
-        </div>
-      </div>
-    `,
+    template: '#game-grid',
     props: ['grid'],
     components: {
       'game-grid-cell': {
-        template: `
-          <div class="border border-secondary rounded cell text-center col-3">
-            <div class="h5 cell-content" :class="value ? ('-cell-' + value) : ''">
-              {{ value }}
-            </div>
-          </div>
-        `,
-        props: ['value']
+        template: '#game-grid-cell',
+        props: ['value'],
+        methods: {
+          blink: function() {
+            $(this.$el).effect('highlight', {}, 300);
+          }
+        },
+        computed: {
+          cellClasses: function() {
+            if (this.value) {
+              return [`-cell-${this.value}`];
+            }
+          }
+        }
       }
     }
   };
 
   const GameControlsComponent = {
-    template: `
-      <div class="card-footer game-controls text-center">
-        <div class="btn-group">
-          <a href="#" class="btn btn-secondary" v-for="direction in directions" @click="move(direction)">
-            <span class="oi" :class="chevronClass(direction)"></span>
-            </span>
-          </a>
-        </div>
-      </div>
-    `,
-    data: function() {
-      return {
-        directions: ['left', 'up', 'down', 'right']
-      };
-    },
+    template: '<div></div>',
     methods: {
-      chevronClass: function(direction) {
-        return {
-          'up': 'oi-chevron-top',
-          'down': 'oi-chevron-bottom',
-          'left': 'oi-chevron-left',
-          'right': 'oi-chevron-right'
-        }[direction];
-      },
       add: function() {
         this.$emit('add');
       },
@@ -199,15 +182,7 @@ $(function() {
   };
 
   const GameFieldComponent = {
-    template: `
-      <div class="card game-field">
-        <div class="card-header">
-          Score: {{ grid.score }}
-        </div>
-        <game-grid :grid="rawGrid"></game-grid>
-        <game-controls @add="add" @move="move"></game-controls>
-      </div>
-    `,
+    template: '#game-field',
     components: {
       'game-grid': GameGridComponent,
       'game-controls': GameControlsComponent
@@ -216,7 +191,7 @@ $(function() {
       const grid = new Grid(4, 4);
       return {
         grid: grid,
-        rawGrid: grid.raw
+        rawGrid: grid.linear()
       };
     },
     methods: {
@@ -228,7 +203,7 @@ $(function() {
       },
       withGrid: function(callback) {
         callback(this.grid);
-        this.$set(this.rawGrid, this.grid.raw);
+        this.rawGrid = this.grid.linear();
       }
     }
   };
