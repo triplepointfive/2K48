@@ -117,26 +117,34 @@ $(function() {
     }
   }
 
+  const GameGridCellComponent = {
+    template: '#game-grid-cell',
+    props: ['value', 'i', 'j'],
+    methods: {
+      blink: function() {
+        $(this.$el).effect('highlight', {}, 300);
+      }
+    },
+    computed: {
+      cellClasses: function() {
+        if (this.value) {
+          return [`-cell-${this.value}`];
+        }
+      },
+      element: function() {
+        return $(`.grid-cell[data-row='${this.i}'][data-column='${this.j}']:first`);
+      }
+    },
+    mounted: function() {
+      $(this.$el).css(this.element.position());
+    }
+  };
+
   const GameGridComponent = {
     template: '#game-grid',
     props: ['grid'],
     components: {
-      'game-grid-cell': {
-        template: '#game-grid-cell',
-        props: ['value'],
-        methods: {
-          blink: function() {
-            $(this.$el).effect('highlight', {}, 300);
-          }
-        },
-        computed: {
-          cellClasses: function() {
-            if (this.value) {
-              return [`-cell-${this.value}`];
-            }
-          }
-        }
-      }
+      'game-grid-cell': GameGridCellComponent
     }
   };
 

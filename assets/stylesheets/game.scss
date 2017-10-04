@@ -24,28 +24,22 @@ $grid-size: 4 * $cell-size + 8 * $cell-margin;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-around;
+  position: relative;
 }
 
 .grid-row {
   height: $cell-size;
   display: flex;
   justify-content: space-around;
-
-  > .cell {
-    display: inline-flex;
-    width: $cell-size;
-    height: $cell-size;
-    border-radius: $cell-margin;
-    background-color: lightgrey;
-
-    > .value {
-      font-size: 40px;
-      margin: auto;
-    }
-  }
 }
 
-.cell {
+.grid-cell {
+  display: inline-flex;
+  width: $cell-size;
+  height: $cell-size;
+  border-radius: $cell-margin;
+  background-color: lightgrey;
+
   &.-cell-2 { background-color: #ffe400; }
   &.-cell-4 { background-color: #ffcc40; }
   &.-cell-8 { background-color: #ffbb01; }
@@ -61,4 +55,13 @@ $grid-size: 4 * $cell-size + 8 * $cell-margin;
   &.-cell-8192 { background-color: #a65b00; }
   &.-cell-16384 { background-color: #a61300; }
   &.-cell-32768 { background-color: #880045; }
+
+  &.-tile {
+    position: absolute;
+  }
+
+  > .value {
+    font-size: 40px;
+    margin: auto;
+  }
 }
