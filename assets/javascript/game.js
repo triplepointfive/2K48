@@ -132,11 +132,14 @@ $(function() {
         }
       },
       element: function() {
-        return $(`.grid-cell[data-row='${this.i}'][data-column='${this.j}']:first`);
+        return $(`.grid-cell.-empty[data-row='${this.i}'][data-column='${this.j}']:first`);
       }
     },
     mounted: function() {
       $(this.$el).css(this.element.position());
+    },
+    beforeUpdate: function() {
+      $(this.$el).animate(this.element.position(), 300 );
     }
   };
 
