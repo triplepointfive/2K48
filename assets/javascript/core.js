@@ -5,6 +5,11 @@ export class Cell {
     this.id = id;
     this.value = value;
   }
+
+  pos(i, j) {
+    this.i = i;
+    this.j = j;
+  }
 }
 
 export class Grid {
@@ -14,24 +19,10 @@ export class Grid {
     this.score = 0;
 
     this.raw = Array.apply(null, { length: height }).map((_, i) => (
-      Array.apply(null, { length: width }).map((_, j) => new Cell(i, j, i * 4 + j))
+      Array.apply(null, { length: width }).map((_, j) => this._newEmptyCell(i, j))
     ));
-    this.addRandomValue();
-    this.addRandomValue();
-  }
-
-  addRandomValue() {
-    const emptyCells = this._emptyCells();
-    if (emptyCells.length == 0) {
-      return;
-    }
-    const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-    this.raw[i][j] = this._newCell(i, j);
-  }
-
-  linear() {
-    return [].concat.apply([], this.raw);
+    this._addRandomValue();
+    this._addRandomValue();
   }
 
   move(direction) {
@@ -70,22 +61,39 @@ export class Grid {
     }
 
     if (this.anyMoved) {
-      this.addRandomValue();
+      this._addRandomValue();
+      console.log(this.raw.map(row => row.map(cell => cell.value || '0').join(' ')).join("\n"));
+      this._setCellPos();
     }
   }
 
+  linear() {
+    return [].concat.apply([], this.raw);
+  }
+
+  _setCellPos() {
+    this.raw.forEach((row, i) =>
+      row.forEach((cell, j) => cell.pos(i, j))
+    );
+  }
+
   _processCell(i, j, di, dj) {
+    if (!this.raw[i][j]) { return; }
     if (!this.raw[i][j].value) { return; }
 
     const ti = i + di, tj = j + dj;
     if (!this._inGrid(ti, tj)) { return; }
 
-    switch (this.raw[ti][tj].value) {
+    switch ((this.raw[ti][tj] || {}).value) {
+    case undefined:
     case null:
-      this.raw[ti][tj].value = this.raw[i][j].value;
+      this.raw[ti][tj] = this.raw[i][j];
+      this.raw[i][j] = this._newEmptyCell(i, j);
       this._processCell(ti, tj, di, dj);
       break;
     case this.raw[i][j].value:
+      this.raw[ti][tj] = this.raw[i][j];
+      this.raw[i][j] = this._newEmptyCell(i, j);
       this.raw[ti][tj].value *= 2;
       this.score += this.raw[ti][tj].value;
       break;
@@ -93,7 +101,6 @@ export class Grid {
       return;
     }
 
-    this.raw[i][j].value = null;
     this.anyMoved = true;
   }
 
@@ -101,14 +108,18 @@ export class Grid {
     return i >= 0 && j >= 0 && i < this.height && j < this.width;
   }
 
-  _newCell(i, j) {
-    if (!this._lastCellId) {
-      this._lastCellId = 0;
+  _newEmptyCell(i, j) {
+    return this._newCell(i, j, null);
+  }
+
+  _addRandomValue() {
+    const emptyCells = this._emptyCells();
+    if (emptyCells.length == 0) {
+      return;
     }
+    const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-    this._lastCellId++;
-
-    return new Cell(i, j, this._lastCellId, Math.random() > 0.9 ? 4 : 2);
+    this.raw[i][j] = this._newCell(i, j, this._newValue());
   }
 
   _emptyCells() {
@@ -122,5 +133,18 @@ export class Grid {
     });
     return emptyCells;
   }
-}
 
+  _newCell(i, j, value) {
+    if (!this._lastCellId) {
+      this._lastCellId = 0;
+    }
+
+    this._lastCellId++;
+
+    return new Cell(i, j, this._lastCellId, value);
+  }
+
+  _newValue() {
+    return Math.random() > 0.9 ? 4 : 2;
+  }
+}

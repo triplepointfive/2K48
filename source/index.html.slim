@@ -6,7 +6,7 @@ script#game-field type="text/template"
     .game-header
       h1.score Score: {{ grid.score }}
     div is="game-grid" :grid="rawGrid"
-    div is="game-controls" @add="add" @move="move"
+    div is="game-controls" @move="move"
 
 script#game-grid type="text/template"
   .game-grid
@@ -15,13 +15,15 @@ script#game-grid type="text/template"
     div[
       is="game-grid-cell"
       v-for="cell in grid"
-      :cell="cell"
+      :i="cell.i"
+      :j="cell.j"
+      :value="cell.value"
       :key="cell.id"
     ]
 
 script#game-grid-cell type="text/template"
   .grid-cell.-tile @click="blink" :class="cellClasses"
     .value
-      | {{ cell.value }}
+      | {{ value }}
 
 <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>

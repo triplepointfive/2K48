@@ -8,7 +8,7 @@ import { Cell, Grid } from 'core';
 $(function() {
   const GameGridCellComponent = {
     template: '#game-grid-cell',
-    props: ['cell'],
+    props: ['i', 'j', 'value'],
     methods: {
       blink: function() {
         $(this.$el)
@@ -18,38 +18,28 @@ $(function() {
     },
     computed: {
       cellClasses: function() {
-        if (this.cell.value) {
-          return [`-cell-${this.cell.value}`];
+        if (this.value) {
+          return [`-cell-${this.value}`];
         }
       },
-      i: function() { return this.cell.i; },
-      j: function() { return this.cell.j; },
       gridElement: function() {
         return $(`.grid-cell.-empty[data-row='${this.i}'][data-column='${this.j}']:first`);
       },
       element: function() {
         return $(this.$el);
-      },
-      value: function() {
-        return this.cell.value;
-      }
-    },
-    watch: {
-      cell: function(newVal, oldVal) {
-        console.log(newVal, oldVal);
       }
     },
     mounted: function() {
-      console.log("mounted");
+      console.log("beforeUpdate", this.value, this.i, this.j);
       this.element.hide();
-      this.element.css(this.gridElement.position())
+      this.element.css(this.gridElement.position());
 
       if (this.value) {
         this.element.promise().done(this.blink);
       }
     },
     beforeUpdate: function() {
-      console.log("beforeUpdate", $(this.$el).position(), this.gridElement.position());
+      console.log("beforeUpdate", this.value, this.i, this.j);
       if (this.value) {
         this.element.animate(this.gridElement.position(), 300);
         this.element.show();
@@ -68,9 +58,6 @@ $(function() {
   const GameControlsComponent = {
     template: '<div></div>',
     methods: {
-      add: function() {
-        this.$emit('add');
-      },
       move: function(direction) {
         this.$emit('move', direction);
       },
@@ -120,9 +107,6 @@ $(function() {
       };
     },
     methods: {
-      add: function() {
-        this.withGrid((grid) => grid.addRandomValue());
-      },
       move: function(direction) {
         this.withGrid((grid) => grid.move(direction));
       },
