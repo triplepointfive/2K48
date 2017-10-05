@@ -1,9 +1,9 @@
 export class Cell {
-  constructor(i, j, id) {
+  constructor(i, j, id, value = null) {
     this.i = i;
     this.j = j;
     this.id = id;
-    this.value = null;
+    this.value = value;
   }
 }
 
@@ -13,13 +13,9 @@ export class Grid {
     this.height = height;
     this.score = 0;
 
-    this.raw = Array(height);
-    for (let i = 0; i < height; i++) {
-      this.raw[i] = new Array(width);
-      for (let j = 0; j < width; j++) {
-        this.raw[i][j] = new Cell(i, j, i * 4 + j);
-      }
-    }
+    this.raw = Array.apply(null, { length: height }).map((_, i) => (
+      Array.apply(null, { length: width }).map((_, j) => new Cell(i, j, i * 4 + j))
+    ));
     this.addRandomValue();
     this.addRandomValue();
   }
@@ -29,9 +25,9 @@ export class Grid {
     if (emptyCells.length == 0) {
       return;
     }
-    const cellPos = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-    this.raw[cellPos[0]][cellPos[1]].value = this._newValue();
+    this.raw[i][j] = this._newCell(i, j);
   }
 
   linear() {
@@ -105,8 +101,14 @@ export class Grid {
     return i >= 0 && j >= 0 && i < this.height && j < this.width;
   }
 
-  _newValue() {
-    return Math.random() > 0.9 ? 4 : 2;
+  _newCell(i, j) {
+    if (!this._lastCellId) {
+      this._lastCellId = 0;
+    }
+
+    this._lastCellId++;
+
+    return new Cell(i, j, this._lastCellId, Math.random() > 0.9 ? 4 : 2);
   }
 
   _emptyCells() {

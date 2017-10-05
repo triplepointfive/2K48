@@ -11,7 +11,9 @@ $(function() {
     props: ['cell'],
     methods: {
       blink: function() {
-        $(this.$el).effect('highlight', {}, 300);
+        $(this.$el)
+          .fadeIn( "slow" );
+        // .effect('highlight', {}, 300);
       }
     },
     computed: {
@@ -22,15 +24,36 @@ $(function() {
       },
       i: function() { return this.cell.i; },
       j: function() { return this.cell.j; },
-      element: function() {
+      gridElement: function() {
         return $(`.grid-cell.-empty[data-row='${this.i}'][data-column='${this.j}']:first`);
+      },
+      element: function() {
+        return $(this.$el);
+      },
+      value: function() {
+        return this.cell.value;
+      }
+    },
+    watch: {
+      cell: function(newVal, oldVal) {
+        console.log(newVal, oldVal);
       }
     },
     mounted: function() {
-      $(this.$el).css(this.element.position());
+      console.log("mounted");
+      this.element.hide();
+      this.element.css(this.gridElement.position())
+
+      if (this.value) {
+        this.element.promise().done(this.blink);
+      }
     },
     beforeUpdate: function() {
-      $(this.$el).animate(this.element.position(), 300);
+      console.log("beforeUpdate", $(this.$el).position(), this.gridElement.position());
+      if (this.value) {
+        this.element.animate(this.gridElement.position(), 300);
+        this.element.show();
+      }
     }
   };
 
@@ -91,7 +114,6 @@ $(function() {
     },
     data: function() {
       const grid = new Grid(4, 4);
-      console.log(grid.linear());
       return {
         grid: grid,
         rawGrid: grid.linear()
