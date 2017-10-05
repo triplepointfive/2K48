@@ -68,6 +68,10 @@ $grid-size: 4 * $cell-size + 8 * $cell-margin;
     z-index: 2;
   }
 
+  &.-hidden {
+    display: none;
+  }
+
   > .value {
     font-size: 30px;
     margin: auto;

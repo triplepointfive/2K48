@@ -17,12 +17,12 @@ script#game-grid type="text/template"
       v-for="cell in grid"
       :i="cell.i"
       :j="cell.j"
-      :value="cell.value"
+      :raw-value="cell.value"
       :key="cell.id"
     ]
 
 script#game-grid-cell type="text/template"
-  .grid-cell.-tile @click="blink" :class="cellClasses"
+  .grid-cell.-tile :class="cellClasses"
     .value
       | {{ value }}
 

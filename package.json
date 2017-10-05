@@ -30,6 +30,7 @@
     "hammerjs": "^2.0.8",
     "jquery-ui": "github:jquery/jquery-ui",
     "jquery-ui-dist": "^1.12.1",
+    "lodash.throttle": "^4.1.1",
     "normalize.css": "^7.0.0",
     "sanitize.css": "^4.1.0",
     "vuejs": "^1.0.29"

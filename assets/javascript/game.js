@@ -4,22 +4,24 @@ import 'jquery-ui-dist/jquery-ui';
 import Hammer from 'hammerjs';
 import 'hammer-time';
 import { Cell, Grid } from 'core';
+import throttle from 'lodash.throttle';
 
 $(function() {
+  const movementAnimationDuration = 300;
   const GameGridCellComponent = {
     template: '#game-grid-cell',
-    props: ['i', 'j', 'value'],
-    methods: {
-      blink: function() {
-        $(this.$el)
-          .fadeIn( "slow" );
-        // .effect('highlight', {}, 300);
-      }
+    props: ['i', 'j', 'rawValue'],
+    data: function() {
+      return {
+        value: this.rawValue
+      };
     },
     computed: {
       cellClasses: function() {
         if (this.value) {
-          return [`-cell-${this.value}`];
+          return `-cell-${this.value}`;
+        } else {
+          return '-hidden';
         }
       },
       gridElement: function() {
@@ -27,22 +29,23 @@ $(function() {
       },
       element: function() {
         return $(this.$el);
+      },
+      pos: function() {
+        return [this.i, this.j];
+      }
+    },
+    watch: {
+      pos: function() {
+        this.element.animate(this.gridElement.position(), movementAnimationDuration).promise().done(() => this.value = this.rawValue);
       }
     },
     mounted: function() {
-      console.log("beforeUpdate", this.value, this.i, this.j);
-      this.element.hide();
-      this.element.css(this.gridElement.position());
-
       if (this.value) {
-        this.element.promise().done(this.blink);
-      }
-    },
-    beforeUpdate: function() {
-      console.log("beforeUpdate", this.value, this.i, this.j);
-      if (this.value) {
-        this.element.animate(this.gridElement.position(), 300);
-        this.element.show();
+        this.element.hide();
+        this.element.css(this.gridElement.position())
+          .delay(movementAnimationDuration).fadeIn('fast');
+      } else {
+        this.element.css(this.gridElement.position());
       }
     }
   };
@@ -107,11 +110,12 @@ $(function() {
       };
     },
     methods: {
-      move: function(direction) {
+      move: throttle(function(direction) {
         this.withGrid((grid) => grid.move(direction));
-      },
+      }, movementAnimationDuration),
       withGrid: function(callback) {
         callback(this.grid);
+
         this.rawGrid = this.grid.linear();
       }
     }

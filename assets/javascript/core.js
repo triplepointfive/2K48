@@ -62,7 +62,6 @@ export class Grid {
 
     if (this.anyMoved) {
       this._addRandomValue();
-      console.log(this.raw.map(row => row.map(cell => cell.value || '0').join(' ')).join("\n"));
       this._setCellPos();
     }
   }
