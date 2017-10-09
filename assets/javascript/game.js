@@ -106,7 +106,7 @@ $(function() {
       const grid = new Grid(4, 4);
       return {
         grid: grid,
-        rawGrid: grid.linear()
+        rawGrid: grid.cells()
       };
     },
     methods: {
@@ -116,7 +116,18 @@ $(function() {
       withGrid: function(callback) {
         callback(this.grid);
 
-        this.rawGrid = this.grid.linear();
+        const cells = this.grid.cells();
+        let animationCells = Object.assign({}, cells);
+        $.each(this.rawGrid, (key) => {
+          const [i, j] = this.rawGrid[key].pos();
+          if (this.grid.raw[i][j].value !== null) {
+            animationCells[key] = this.rawGrid[key];
+          }
+        });
+
+        this.rawGrid = animationCells;
+
+        setTimeout(() => this.rawGrid = cells, movementAnimationDuration);
       }
     }
   };

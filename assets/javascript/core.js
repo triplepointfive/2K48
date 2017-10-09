@@ -7,8 +7,12 @@ export class Cell {
   }
 
   pos(i, j) {
-    this.i = i;
-    this.j = j;
+    if (i !== undefined && j != undefined) {
+      this.i = i;
+      this.j = j;
+    }
+
+    return [this.i, this.j];
   }
 }
 
@@ -66,8 +70,10 @@ export class Grid {
     }
   }
 
-  linear() {
-    return [].concat.apply([], this.raw);
+  cells() {
+    let cells = {};
+    this.raw.forEach(row => row.forEach(cell => cells[cell.id] = cell));
+    return cells;
   }
 
   _setCellPos() {
